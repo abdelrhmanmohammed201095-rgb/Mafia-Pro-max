@@ -30,13 +30,14 @@ jobs:
           npm install @capacitor/core@5.7.4 @capacitor/cli@5.7.4 @capacitor/android@5.7.4
           npm run build
           
-          if [ ! -d "android" ]; then
-            echo "Initializing Capacitor config..."
-            echo '{"appId": "com.boodydevs.mafiapromax", "appName": "Mafia Pro Max", "webDir": "dist"}' > capacitor.config.json
-            npx cap add android
-          else
-            npx cap update android
-          fi
+          # مسح مجلد أندرويد القديم لو موجود عشان نبدأ من نظيف
+          rm -rf android
+          
+          # تهيئة كاباسيتور بالطريقة الرسمية التلقائية بالكامل
+          npx cap init "Mafia Pro Max" "com.boodydevs.mafiapromax" --web-dir dist --yes || true
+          
+          # إضافة منصة أندرويد
+          npx cap add android
 
       - name: Setup Android SDK and Build APK
         env:
@@ -54,19 +55,10 @@ jobs:
           sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
 
           cd android
-          
           echo "sdk.dir=/home/runner/android-sdk" > local.properties
           
-          # تعطيل الـ Lint تماماً في ملف الـ build.gradle لمنع أي مشاكل فحص تالفة
-          if [ -f "app/build.gradle" ]; then
-            echo "android { lintOptions { checkReleaseBuilds false abortOnError false } }" >> app/build.gradle
-          fi
-          
-          # مسح الكاش القديم
-          rm -rf ~/.gradle/caches/
-          
           chmod +x gradlew
-          ./gradlew assembleRelease --refresh-dependencies --no-daemon
+          ./gradlew assembleRelease --no-daemon
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
