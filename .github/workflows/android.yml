@@ -30,10 +30,8 @@ jobs:
           npm install @capacitor/core @capacitor/cli @capacitor/android
           npm run build
           
-          # لو مجلد أندرويد مش موجود، بننشئه بطريقة نظيفة من غير مشاكل الـ CLI
           if [ ! -d "android" ]; then
             echo "Initializing Capacitor config..."
-            # إنشاء ملف إعدادات سريع كاباسيتور يريحنا من الأسئلة التفاعلية
             echo '{"appId": "com.boodydevs.mafiapromax", "appName": "Mafia Pro Max", "webDir": "dist"}' > capacitor.config.json
             npx cap add android
           else
@@ -54,8 +52,12 @@ jobs:
           sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
 
           cd android
+          
+          # مسح أي كاش تالف للجرادل قبل البناء لتجنب مشكلة الـ Jar file
+          rm -rf ~/.gradle/caches/
+          
           chmod +x gradlew
-          ./gradlew assembleRelease
+          ./gradlew assembleRelease --no-daemon
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
