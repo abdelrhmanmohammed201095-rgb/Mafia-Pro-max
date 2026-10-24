@@ -24,21 +24,17 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Install dependencies and Auto-Setup Capacitor
+      - name: Install dependencies and Setup Capacitor
         run: |
-          # تثبيت حزم المشروع الأساسية
           npm install
-          
-          # تثبيت كاباسيتور وكليّات أندرويد لو مش موجودين في المشروع
           npm install @capacitor/core @capacitor/cli @capacitor/android
-          
-          # بناء ملفات الويب
           npm run build
           
-          # لو مجلد أندرويد مش موجود، بنعمله تهيئة وإضافة أوتوماتيكياً
+          # لو مجلد أندرويد مش موجود، بننشئه بطريقة نظيفة من غير مشاكل الـ CLI
           if [ ! -d "android" ]; then
-            echo "Creating Capacitor Android project..."
-            npx cap init "Mafia Pro Max" "com.boodydevs.mafiapromax" --web-dir dist --yes
+            echo "Initializing Capacitor config..."
+            # إنشاء ملف إعدادات سريع كاباسيتور يريحنا من الأسئلة التفاعلية
+            echo '{"appId": "com.boodydevs.mafiapromax", "appName": "Mafia Pro Max", "webDir": "dist"}' > capacitor.config.json
             npx cap add android
           else
             npx cap update android
@@ -57,7 +53,6 @@ jobs:
           yes | sdkmanager --licenses
           sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
 
-          # الدخول على مجلد الأندرويد وبناء الـ APK
           cd android
           chmod +x gradlew
           ./gradlew assembleRelease
