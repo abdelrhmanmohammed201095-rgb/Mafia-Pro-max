@@ -1,9 +1,8 @@
-name: Build & Release APK
+name: Build Android APK
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches: [ "main" ]
 
 jobs:
   build:
