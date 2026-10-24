@@ -1,5 +1,4 @@
-- name: Build and Release APK
-  uses: sangatdesai/release-apk@V1.0name: Build & Publish Release APK
+name: Build & Publish Release APK
 
 on:
   push:
@@ -10,18 +9,22 @@ jobs:
   Gradle:
     runs-on: ubuntu-latest
     steps:
-    - name: checkout code
+    - name: Checkout code
       uses: actions/checkout@v2
-    - name: setup jdk
+
+    - name: Setup JDK
       uses: actions/setup-java@v1
       with:
-        java-version: 11
+        java-version: 17  # الأفضل تخليها 17 لو المشروع حديث، أو سيبها 11 لو شغال معاك
+
     - name: Make Gradle executable
       run: chmod +x ./gradlew
+
     - name: Build Release APK
       run: ./gradlew assembleRelease
+
     - name: Releasing using Hub
       uses: sangatdesai/release-apk@main
       env:
-       GITHUB_TOKEN: ${{ secrets.SECRETTT }}
-       APP_FOLDER: app
+        GITHUB_TOKEN: ${{ secrets.SECRETTT }}
+        APP_FOLDER: app
