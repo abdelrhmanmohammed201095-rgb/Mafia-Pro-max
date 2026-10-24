@@ -19,11 +19,19 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x ./gradlew
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
 
-      - name: Build APK with Gradle
-        run: ./gradlew assembleRelease
+      - name: Grant execute permission for gradlew
+        run: |
+          if [ -f ./gradlew ]; then
+            chmod +x ./gradlew
+            ./gradlew assembleRelease
+          else
+            echo "Gradle wrapper not found, installing default gradle..."
+            sudo apt-get update && sudo apt-get install -y gradle
+            gradle assembleRelease
+          fi
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
