@@ -19,7 +19,7 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Install Android SDK via Command Line Tools
+      - name: Install Android SDK and Build APK
         run: |
           export ANDROID_SDK_ROOT=$HOME/android-sdk
           mkdir -p $ANDROID_SDK_ROOT/cmdline-tools
@@ -32,16 +32,9 @@ jobs:
           yes | sdkmanager --licenses
           sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
 
-      - name: Build APK with Gradle
-        run: |
-          export ANDROID_SDK_ROOT=$HOME/android-sdk
-          if [ -f ./gradlew ]; then
-            chmod +x ./gradlew
-            ./gradlew assembleRelease
-          else
-            sudo apt-get update && sudo apt-get install -y gradle
-            gradle assembleRelease
-          fi
+          # تثبيت الـ Gradle العام وتشغيل البناء مباشرة دون الحاجة لملفات الـ Wrapper المفقودة
+          sudo apt-get update && sudo apt-get install -y gradle
+          gradle assembleRelease
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
