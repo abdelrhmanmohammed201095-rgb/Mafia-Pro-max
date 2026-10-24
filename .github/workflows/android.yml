@@ -34,7 +34,8 @@ jobs:
 
           sudo apt-get update && sudo apt-get install -y gradle
           
-          gradle assembleRelease --stacktrace || (echo "=== BUILD FAILED DETECTED ===" && exit 1)
+          # أمر لطباعة السطور اللي فيها الإيرور بالتحديد قبل ما يقفل
+          gradle assembleRelease --info || (echo "====================" && echo "HERE IS THE EXACT ERROR:" && gradle assembleRelease --stacktrace | grep -A 20 "Task " && exit 1)
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
