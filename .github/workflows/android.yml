@@ -30,13 +30,16 @@ jobs:
           npm install @capacitor/core@5.7.4 @capacitor/cli@5.7.4 @capacitor/android@5.7.4
           npm run build
           
-          # مسح مجلد أندرويد القديم لو موجود عشان نبدأ من نظيف
+          # إنشاء إعدادات نظيفة ومستقرة لكاباسيتور
+          echo '{
+            "appId": "com.boodydevs.mafiapromax",
+            "appName": "Mafia Pro Max",
+            "webDir": "dist",
+            "bundledWebRuntime": false
+          }' > capacitor.config.json
+          
+          # إعادة ضبط مجلد أندرويد من نظيف
           rm -rf android
-          
-          # تهيئة كاباسيتور بالطريقة الرسمية التلقائية بالكامل
-          npx cap init "Mafia Pro Max" "com.boodydevs.mafiapromax" --web-dir dist --yes || true
-          
-          # إضافة منصة أندرويد
           npx cap add android
 
       - name: Setup Android SDK and Build APK
